@@ -9,11 +9,8 @@ env:
   CI: true
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+  build: # имя взято для примера
+    runs-on: ubuntu-latest
     steps:
         # Check-out repository under GitHub workspace
         # https://github.com/actions/checkout
