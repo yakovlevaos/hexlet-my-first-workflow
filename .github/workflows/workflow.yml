@@ -1,29 +1,26 @@
-name: Node CI
+name: Node.js CI
 
-# Trigger the workflow on push or pull request
 on:
-  - push
-  - pull_request
-
-env:
-  CI: true
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build: # имя взято для примера
+  build:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
     steps:
-        # Check-out repository under GitHub workspace
-        # https://github.com/actions/checkout
-      - uses: actions/checkout@v2
-        # Step's name
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        # Configures the node version used on GitHub-hosted runners
-        # https://github.com/actions/setup-node
-        uses: actions/setup-node@v2
-        # The Node.js version to configure
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: make install
-      - run: make lint
-      - run: make te
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
