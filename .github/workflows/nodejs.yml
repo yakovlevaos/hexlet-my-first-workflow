@@ -1,42 +1,24 @@
-# Name of workflow
-name: Node CI
+name: NodeJs CI
 
-# Trigger the workflow on push or pull request
 on:
   - push
   - pull_request
 
-env:
-  CI: true
-
 jobs:
   build:
 
-    # The type of machine to run the job on
     runs-on: ubuntu-latest
-defaults:
-  run:
-    shell: bash
-strategy:
-  matrix:
-    node-version: [14.x]
-    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-steps:
+    strategy:
+      matrix:
+        node-version: [12.x]
 
-
-- uses: actions/checkout@v2
-- name: Use Node.js ${{ matrix.node-version }}
-  uses: actions/setup-node@v2
-  with:
-    node-version: ${{ matrix.node-version }}
-    cache: 'yarn'
-    cache-dependency-path: ./node-app/yarn.lock
-
-- name: run npm commands
-  working-directory: node-app
-  run: | 
-    yarn && CI=true
-    # yarn build --if-present
-    # yarn test
-    node test.js
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: make install
+    - run: make test
+    - run: make lint
